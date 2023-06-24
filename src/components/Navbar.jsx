@@ -22,7 +22,7 @@ const Navbar = () => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch('https://portfolio_api-1-x0019801.deta.app/about');
+            const response = await fetch('https://port.abirmunna.me/about');
             const jsonData = await response.json();
             setAbout(jsonData[0])
         } catch (error) {
@@ -39,12 +39,13 @@ const Navbar = () => {
     const handleSaveClick = () => {
         const updateData = async () => {
             try {
-                const response = await fetch('https://portfolio_api-1-x0019801.deta.app/about', {
+                const response = await fetch('https://port.abirmunna.me/about', {
                     method: 'PUT',
                     headers: {
                     'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        "id": 1,
                         "name": about?.name,
                         "motto": motto,
                         "bio": about?.bio
@@ -55,6 +56,7 @@ const Navbar = () => {
                 });
                 
                 if (response.ok) {
+                    fetchData();
                     console.log('Data updated successfully');
                 } else {
                     console.log('Error updating data');

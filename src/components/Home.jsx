@@ -9,15 +9,18 @@ import profile from '../images/pro_pic.jpg';
 const Home = () => {
     const [about, setAbout] = useState();
     const [designation, setDesignation] = useState();
+    const [awards, setAwards] = useState();
+    const [editBio, setEditBio] = useState(null)
     
     useEffect(() => {
         fetchData();
         fetchDesignation();
+        fetchAwards();
       }, []);
 
     const fetchData = async () => {
         try {
-            const response = await fetch('https://portfolio_api-1-x0019801.deta.app/about');
+            const response = await fetch('https://port.abirmunna.me/about');
             const jsonData = await response.json();
             setAbout(jsonData[0])
         } catch (error) {
@@ -28,9 +31,20 @@ const Home = () => {
 
     const fetchDesignation = async () => {
         try {
-            const response = await fetch('https://portfolio_api-1-x0019801.deta.app/designation');
+            const response = await fetch('https://port.abirmunna.me/designation');
             const jsonData = await response.json();
             setDesignation(jsonData)
+        } catch (error) {
+            console.log('Error fetching data:', error);
+            // setLoading(false);
+        }
+    };
+    
+    const fetchAwards = async () => {
+        try {
+            const response = await fetch('https://port.abirmunna.me/awards');
+            const jsonData = await response.json();
+            setAwards(jsonData)
         } catch (error) {
             console.log('Error fetching data:', error);
             // setLoading(false);
@@ -53,22 +67,98 @@ const Home = () => {
     const [bio, setBio] = useState(null);
 
     const handleSaveBio = () => {
-        //api call
-        console.log(bio)
+        if(bio && bio.id !== undefined) {
+            const updateData = async () => {
+                try {
+                    const response = await fetch('https://port.abirmunna.me/designation', {
+                        method: 'PUT',
+                        headers: {
+                        'Content-Type': 'application/json',    
+                        },
+                        body: JSON.stringify({
+                            "location": bio?.location,
+                            "id": bio?.id,
+                            "name": bio?.name,
+                            "company": bio?.company
+                        },
+                        null,
+                        2
+                        ),
+                    });
+                    
+                    if (response.ok) {
+                        fetchDesignation();
+                        setBio(null);
+                        console.log('Data updated successfully');
+                    } else {
+                        console.log('Error updating data');
+                    }
+                } catch (error) {
+                    console.log('Error updating data:', error);
+                }
+            };
+            updateData();
+        }
+        else{
+            const updateData = async () => {
+                try {
+                    const response = await fetch('https://port.abirmunna.me/designation', {
+                        method: 'POST',
+                        headers: {
+                        'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "location": bio?.location || "",
+                            "name": bio?.name,
+                            "company": bio?.company || ""
+                        },
+                        null,
+                        2
+                        ),
+                    });
+                    
+                    if (response.ok) {
+                        fetchDesignation();
+                        setBio(null);
+                        console.log('Data updated successfully');
+                    } else {
+                        console.log('Error updating data');
+                    }
+                } catch (error) {
+                    console.log('Error updating data:', error);
+                }
+            };
+            updateData();
+        }
+
         setIsBioEditing(false)
-        setBio(null);
     }
 
-    const handleBioUpdateButton = (index, name, company, location) => {
-        setBio((prevBio) => ({ ...prevBio, name, company, location }));
+    const handleBioUpdateButton = (id, name, company, location) => {
+        setBio((prevBio) => ({ ...prevBio, id, name, company, location }));
         setIsBioEditing(true)
-
-        console.log(index, name, company, location)
     }
 
     const handleBioDelete = (id) => {
-        //api call
-        console.log(id)
+        const deleteDesignation = async () => {
+            try {
+                const response = await fetch(`https://port.abirmunna.me/designation?id=${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                });
+                if (response.ok) {
+                    fetchDesignation();
+                    console.log('Data deleted successfully');
+                } else {
+                    console.log('Error updating data');
+                }
+            } catch (error) {
+                console.log('Error updating data:', error);
+            }
+        };
+        deleteDesignation();
     }
 
     //---------------------------Image editing functionality---------------------------
@@ -81,39 +171,98 @@ const Home = () => {
     const [isAwardEditing, setIsAwardEditing] = useState(false);
     const [award, setAward] = useState(null);
 
-    const handleUpdateAward = (index, title, year) => {
-        setAward((prevAward) => ({ ...prevAward, title, year }));
+    const handleUpdateAward = (id, title, year) => {
+        setAward((prevAward) => ({ ...prevAward, id, title, year }));
         setIsAwardEditing(true)
     }
 
     const handleSaveAward = () => {
-        console.log(award)
+        if(award && award.id !== undefined) {
+            const updateAward = async () => {
+                try {
+                    const response = await fetch('https://port.abirmunna.me/awards', {
+                        method: 'PUT',
+                        headers: {
+                        'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "title": award?.title,
+                            "year": award?.year,
+                            "id": award?.id
+                        },
+                        null,
+                        2
+                        ),
+                    });
+                    
+                    if (response.ok) {
+                        fetchAwards();
+                        setAward(null);
+                        console.log('Data updated successfully');
+                    } else {
+                        console.log('Error updating data');
+                    }
+                } catch (error) {
+                    console.log('Error updating data:', error);
+                }
+            };
+            updateAward();
+        }
+        else{
+            const updateAward = async () => {
+                try {
+                    const response = await fetch('https://port.abirmunna.me/awards', {
+                        method: 'POST',
+                        headers: {
+                        'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "title": award?.title || "",
+                            "year": award?.year || ""
+                        },
+                        null,
+                        2
+                        ),
+                    });
+                    
+                    if (response.ok) {
+                        fetchAwards();
+                        setAward(null);
+                        console.log('Data updated successfully');
+                    } else {
+                        console.log('Error updating data');
+                    }
+                } catch (error) {
+                    console.log('Error updating data:', error);
+                }
+            };
+            updateAward();
+        }
         setIsAwardEditing(false)
     }
 
-    const handleDeleteAward = (index) => {
-        //api call
-        console.log(index)
+    const handleDeleteAward = (id) => {
+        const deleteAward = async () => {
+            try {
+                const response = await fetch(`https://port.abirmunna.me/awards?id=${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                });
+                if (response.ok) {
+                    fetchAwards();
+                    console.log('Data deleted successfully');
+                } else {
+                    console.log('Error updating data');
+                }
+            } catch (error) {
+                console.log('Error updating data:', error);
+            }
+        };
+        deleteAward();
     }
 
-    const awards = [
-        {
-            title: 'Received Tsuha Fellowship at the University of Western Australia for the period 2022-2025',
-            year: 'Year 2021'
-        },
-        {
-            title: 'Received Young Scientist award by Bangladesh Academy of Sciences, Dhaka, Bangladesh',
-            year: 'Year 2019'
-        },
-        {
-            title: 'Certificate of award for contribution to Faith-based research, House of Lords, London, UK',
-            year: 'Year 2018'
-        },
-        {
-            title: 'Outstanding contribution in reviewing articles for Public Health in 2018',
-            year: 'Year 2018'
-        }
-    ]
     const [activeIndex, setActiveIndex] = useState(0);
 
     useEffect(() => {
@@ -129,18 +278,50 @@ const Home = () => {
     const [isEditing, setIsEditing] = useState(false);
 
     const handleEditClick = () => {
+        setEditBio(about.bio)
         setIsEditing(true);
     };
 
     const handleSaveClick = () => {
+        const updateData = async () => {
+            try {
+                const response = await fetch('https://port.abirmunna.me/about', {
+                    method: 'PUT',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "id": 1,
+                        "name": about?.name,
+                        "motto": about?.motto,
+                        "bio": editBio
+                    },
+                    null,
+                    2
+                    ),
+                });
+                
+                if (response.ok) {
+                    fetchData();
+                    setEditBio(null)
+                    console.log('Data updated successfully');
+                } else {
+                    console.log('Error updating data');
+                }
+            } catch (error) {
+                console.log('Error updating data:', error);
+            }
+        };
+    
+        updateData();
         setIsEditing(false);
-        // Perform any save/update logic here, such as sending the updated text to a backend server
     };
 
     const handleChange = (event) => {
-        // setText(event.target.value);
+        setEditBio(event.target.value);
     };
     const handleCancelClick = () => {
+        setEditBio(null)
         setIsEditing(false);
     }
 
@@ -249,7 +430,7 @@ const Home = () => {
                 <div className="flex-1">
                 {isEditing ? (
                     <div className='w-full'>
-                        <textarea value={about?.bio} onChange={handleChange} className="text-justify mb-4 w-full h-96 outline-none"/>
+                        <textarea value={editBio} onChange={handleChange} className="text-justify mb-4 w-full h-96 outline-none"/>
                         <button className='border px-4 py-1 mb-4 rounded mr-4' onClick={handleSaveClick}>Save</button>
                         <button className='border px-4 py-1 mb-4 rounded' onClick={handleCancelClick}>Cancel</button>
                     </div>
@@ -284,7 +465,7 @@ const Home = () => {
             <div>
                 <p className='w-full text-center py-1 bg-indigo-950 text-white font-semibold mt-4'>Awards</p>
                 {
-                    awards.map((a, index)=> (
+                    awards?.map(a=> (
                         <div className="flex gap-2 p-2 border rounded my-2 shadow h-fit" key={a.title}>
                             <div className="w-28 h-20">
                                 <img src="" alt="" className="w-full h-full object-fit" />
@@ -295,13 +476,16 @@ const Home = () => {
                             </div>
                             {true && (
                                 <div className="flex gap-4 h-fit my-auto">
-                                    <button className="fas fa-edit text-green-500" onClick={() => handleUpdateAward(index, a.title, a.year)}></button>
-                                    <button className="fas fa-trash text-red-400" onClick={() => handleDeleteAward(index)}></button>
+                                    <button className="fas fa-edit text-green-500" onClick={() => handleUpdateAward(a.id, a.title, a.year)}></button>
+                                    <button className="fas fa-trash text-red-400" onClick={() => handleDeleteAward(a.id)}></button>
                                 </div>
                             )}
                         </div>
                     ))
                 }
+                {true && (
+                    <button onClick={() => setIsAwardEditing(true)} className="edit">ADD</button>
+                )}
             </div>
         </div>
     );
