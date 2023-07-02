@@ -5,12 +5,14 @@ import img1 from '../images/123.jpg';
 import img2 from '../images/456.jpg';
 import img3 from '../images/789.jpg';
 import profile from '../images/pro_pic.jpg';
+import { useSelector } from 'react-redux';
 
 const Home = () => {
     const [about, setAbout] = useState();
     const [designation, setDesignation] = useState();
     const [awards, setAwards] = useState();
     const [editBio, setEditBio] = useState(null)
+    const isLoggedIn = useSelector(state => state.isLoggedIn.value);
     
     useEffect(() => {
         fetchData();
@@ -406,7 +408,7 @@ const Home = () => {
                     <div className="max-w-full w-56 h-64">
                         <img src={profile} alt="profile" className="w-full h-full object-cover"/>
                     </div>
-                    <div  onClick={() => setImageEditing(true)} className="fas fa-edit cursor-pointer scale-110 text-green-500"></div>
+                    {isLoggedIn && <div onClick={() => setImageEditing(true)} className="fas fa-edit cursor-pointer scale-110 text-green-500"></div>}
                     <div className='text-center'><p className='font-bold text-xl'>{about?.name}</p>
                         {
                             designation?.map((d, index) => (
@@ -416,15 +418,16 @@ const Home = () => {
                                         <p>{d.company}</p>
                                         <p>{d.location}</p>
                                     </div>
+                                    {isLoggedIn && (
                                     <div className="flex justify-center gap-4">
                                         <button className="fas fa-edit text-green-500" onClick={() => handleBioUpdateButton(d.id, d.name, d.company, d.location)}></button>
                                         <button className="fas fa-trash text-red-400" onClick={() => handleBioDelete(d.id)}></button>
-                                    </div>
+                                    </div>)}
                                 </div>
                             ))
                         }
                     </div>
-                    <button onClick={() => setIsBioEditing(true)} className="edit">ADD</button>
+                    {isLoggedIn && <button onClick={() => setIsBioEditing(true)} className="edit">ADD</button>}
                 </div>
 
                 <div className="flex-1">
@@ -437,7 +440,7 @@ const Home = () => {
                     ) : (
                         <div>
                             <p className="text-justify mb-4">{about?.bio}</p>
-                            <button className='border px-4 py-1 mb-4 rounded' onClick={handleEditClick}>Edit</button>
+                            {isLoggedIn && <button className='border px-4 py-1 mb-4 rounded' onClick={handleEditClick}>Edit</button>}
                         </div>
                     )}
                     <Carousel selectedItem={activeIndex} onChange={setActiveIndex}>
@@ -459,7 +462,7 @@ const Home = () => {
 
                         </div>
                     </div>
-                    <button onClick={handleCarouselImage} className="edit">ADD</button>
+                    {isLoggedIn && <button onClick={handleCarouselImage} className="edit">ADD</button>}
                 </div>
             </div>
             <div>
@@ -474,7 +477,7 @@ const Home = () => {
                                 <p className="font-semibold text-md">{a.title}</p>
                                 <p>{a.year}</p>
                             </div>
-                            {true && (
+                            {isLoggedIn && (
                                 <div className="flex gap-4 h-fit my-auto">
                                     <button className="fas fa-edit text-green-500" onClick={() => handleUpdateAward(a.id, a.title, a.year)}></button>
                                     <button className="fas fa-trash text-red-400" onClick={() => handleDeleteAward(a.id)}></button>
@@ -483,7 +486,7 @@ const Home = () => {
                         </div>
                     ))
                 }
-                {true && (
+                {isLoggedIn && (
                     <button onClick={() => setIsAwardEditing(true)} className="edit">ADD</button>
                 )}
             </div>

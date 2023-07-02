@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const Research = () => {
+    const isLoggedIn = useSelector(state => state.isLoggedIn.value);
     const [selectedProject, setSelectedProject] = useState(null);
     const [data, setData] = useState();
     const [researchTitle, setResearchTitle] = useState();
@@ -325,15 +327,16 @@ const Research = () => {
                 </div>
             )}
             <p className='text-2xl font-bold text-center my-4'>Research</p>
+            <p className="text-xl font-bold bg-indigo-950 p-2 text-white w-fit">On Going</p>
             {
                 data?.map(d => (
                     <div className='my-4' key={d.id}>
-                        <p className="text-xl font-bold bg-indigo-950 p-2 text-white w-fit">{d.title}</p>
+                        <p className="text-lg font-semibold">{d.title}</p>
                         <p className="">{d.description}</p>
-                        <div className="flex gap-4">
+                        {isLoggedIn && (<div className="flex gap-4">
                             <button onClick={() => handleEdit(d.id, d.title, d.description)} className="fas fa-edit"></button>
                             <button onClick={() => handleTitleDelete(d.id)} className="fas fa-trash text-red-500"></button>
-                        </div>
+                        </div>)}
                         <button onClick={() => handleViewPublications(d.description)} className='border px-2 rounded my-2'>View Publications</button>
                         {selectedProject === d.description && (
                             d.publications.map(p => (
@@ -341,10 +344,10 @@ const Research = () => {
                                     <p className="font-semibold">{p.title}</p>
                                     <p>{p.published}</p>
                                     <p>{p.authors}</p>
-                                    <div className="flex gap-4">
+                                    {isLoggedIn && (<div className="flex gap-4">
                                         <button onClick={() => handlePublicationsEdit(p.id, p.research_id, p.title, p.published, p.authors)} className="fas fa-edit"></button>
                                         <button onClick={() => handlePublicationDelete(d.id)} className="fas fa-trash text-red-500"></button>
-                                    </div>
+                                    </div>)}
                                 </div>
                             ))
                         )}

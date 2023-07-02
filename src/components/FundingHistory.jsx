@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const FundingHistory = () => {
-    const [total, setTotal] = useState();
-    const [roleSum, setRoleSum] = useState()
+    const isLoggedIn = useSelector((state) => state.isLoggedIn.value);
+    const [total, setTotal] = useState(0);
+    const [roleSum, setRoleSum] = useState(0);
 
     //---------------------Table update functionality ------------------
     const [isTableEditing, setIsTableEditing] = useState(false);
@@ -127,13 +129,13 @@ const FundingHistory = () => {
     useEffect(() => {
         if (data && data.length > 0) {
             const totalSum = data.reduce((accumulator, currentObject) => {
-                return accumulator + currentObject.awarded_amount;
+                return Number(accumulator) + Number(currentObject.awarded_amount);
             }, 0);
             setTotal(totalSum || 0);
         
             const roleSums = data.reduce((accumulator, currentObject) => {
                 const { role, awarded_amount } = currentObject;
-                accumulator[role] = (accumulator[role] || 0) + awarded_amount;
+                accumulator[role] = (Number(accumulator[role]) || 0) + Number(awarded_amount);
                 return accumulator;
             }, {});
             setRoleSum(roleSums);
@@ -207,7 +209,7 @@ const FundingHistory = () => {
                     <p className='w-20'>Awarded</p>
                     <p className='w-40'>Time Period</p>
                     <p className='w-16'>Doner</p>
-                    {true && (
+                    {isLoggedIn && (
                         <div className="w-20">Actions</div>
                     )}
                 </div>
@@ -220,7 +222,7 @@ const FundingHistory = () => {
                             <p className='w-20'>{d.awarded_amount}</p>
                             <p className='w-40'>{d.time_period}</p>
                             <p className='w-16'>{d.doner}</p>
-                            {true && (
+                            {isLoggedIn && (
                                 <div className="flex w-20 gap-4 justify-center items-center">
                                     <button onClick={() => handleUpdate(d)} className="fas fa-edit text-green-500"></button>
                                     <button onClick={() => handleDelete(d.id)} className="fas fa-trash text-red-400"></button>
@@ -229,7 +231,7 @@ const FundingHistory = () => {
                         </div>
                     ))
                 }
-                {true && (
+                {isLoggedIn && (
                     <button onClick={() => setIsTableEditing(true)} className="edit">ADD</button>
                 )}
             </div>

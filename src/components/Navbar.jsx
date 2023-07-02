@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import {Link, useLocation } from 'react-router-dom'
 import scholar from '../images/scholar.png'
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
+    const isLoggedIn = useSelector(state => state.isLoggedIn.value);
     const Links = [
         {name: "About Me", link: '/'},
         {name: "Research", link: '/research'},
@@ -85,7 +87,7 @@ const Navbar = () => {
             ) : (
                 <div className="flex">
                     <p className='md:mx-24 mx-4'>{about?.motto}</p>
-                    <button onClick={handleMotto} className="fas fa-edit"></button>
+                    {isLoggedIn && <button onClick={handleMotto} className="fas fa-edit"></button>}
                 </div>
             )}
             <div className="flex mt-4 left-0 md:px-0 bg-indigo-950 z-50 h-8 relative">
