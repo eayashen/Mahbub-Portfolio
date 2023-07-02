@@ -9,20 +9,22 @@ import Login from './components/Login';
 
 const App = () => {
   return (
-    <div>
+    <div className='min-h-screen flex flex-col justify-between'>
       <Router>
-        <Navbar />
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/research' element={<Research />} />
-          <Route path='/fundinghistory' element={<FundingHistory />} />
-          <Route path='/contact' element={<Contact />} />
-          <Route path='/login' element={<Login />} />
-        </Routes>
+        <div>
+          <Navbar />
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/research' element={<Research />} />
+            <Route path='/fundinghistory' element={<FundingHistory />} />
+            <Route path='/contact' element={<Contact />} />
+            <Route path='/login' element={<Login />} />
+          </Routes>
+        </div>
         <footer className='text-center bg-indigo-950 text-white py-2'>
-        © 2023<Link to='/login'>Mahbub-ul Alam</Link>. All rights reserved.</footer>
+          © 2023 <Link to='/login'>Mahbub-ul Alam</Link>. All rights reserved.
+        </footer>
       </Router>
-      
     </div>
   );
 }
