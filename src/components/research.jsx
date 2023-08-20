@@ -16,7 +16,7 @@ const Research = () => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch('https://port.abirmunna.me/research');
+            const response = await fetch('https://port.abirmunna.me/api/v1/research');
             const jsonData = await response.json();
             setData(jsonData)
         } catch (error) {
@@ -24,66 +24,13 @@ const Research = () => {
             // setLoading(false);
         }
     };
-    // const data = [
-    //     {
-    //         title: 'On Going Research',
-    //         segment: [{
-    //             headline: 'Development of WASH sector National Planning, Monitoring and Reporting System',
-    //             details: 'This project aims to provide technical support to the GoB in developing a National Planning, Monitoring and Reporting System (NPMRS) to support decisions toward investment mobilization and equitable allocation of resources for accelerated access to quality and sustainable WASH services in Bangladesh.',
-    //             projects: [
-    //                 {
-    //                     title: 'Shared Sanitation in Low-income Urban Settlements in Bangladesh: Research Results and Policy Recommendations.',
-    //                     subTitle: 'Policy brief from QUISS study 2020',
-    //                     author: 'Mahbub-Ul Alam, Sharika Ferdous, Christoph Lüthi, Vasco Schelbert, Dario Meili.'
-    //                 }
-    //             ]
-    //         },{
-    //             headline: 'Development of divisional level costed action plan to implement the national Menstrual Hygiene Management (MHM) Strategy, 2021',
-    //             details: 'This project aims to provide technical support to the GoB in developing a National Planning, Monitoring and Reporting System (NPMRS) to support decisions toward investment mobilization and equitable allocation of resources for accelerated access to quality and sustainable WASH services in Bangladesh.',
-    //             projects: [
-    //                 {
-    //                     title: 'Shared Sanitation in Low-income Urban Settlements in Bangladesh: Research Results and Policy Recommendations.',
-    //                     subTitle: 'Policy brief from QUISS study 2020',
-    //                     author: 'Mahbub-Ul Alam, Sharika Ferdous, Christoph Lüthi, Vasco Schelbert, Dario Meili.'
-    //                 }
-    //             ]
-    //         }
-    //         ]
-    //     },
-    //     {
-    //         title: 'Previous Research',
-    //         segment: [{
-    //             headline: 'WASH Situation Assessment in Bashan Char and Development of Database and Monitoring System',
-    //             details: 'This project aims to provide technical support to the GoB in developing a National Planning, Monitoring and Reporting System (NPMRS) to support decisions toward investment mobilization and equitable allocation of resources for accelerated access to quality and sustainable WASH services in Bangladesh.',
-    //             projects: [
-    //                 {
-    //                     title: 'Shared Sanitation in Low-income Urban Settlements in Bangladesh: Research Results and Policy Recommendations.',
-    //                     subTitle: 'Policy brief from QUISS study 2020',
-    //                     author: 'Mahbub-Ul Alam, Sharika Ferdous, Christoph Lüthi, Vasco Schelbert, Dario Meili.'
-    //                 }
-    //             ]
-    //             },
-    //             {
-    //             headline: 'WASH Situation Assessment in Bashan Char and Development of Database and Monitoring System',
-    //             details: 'This project aims to provide technical support to the GoB in developing a National Planning, Monitoring and Reporting System (NPMRS) to support decisions toward investment mobilization and equitable allocation of resources for accelerated access to quality and sustainable WASH services in Bangladesh.',
-    //             projects: [
-    //                 {
-    //                     title: 'Shared Sanitation in Low-income Urban Settlements in Bangladesh: Research Results and Policy Recommendations.',
-    //                     subTitle: 'Policy brief from QUISS study 2020',
-    //                     author: 'Mahbub-Ul Alam, Sharika Ferdous, Christoph Lüthi, Vasco Schelbert, Dario Meili.'
-    //                 }
-    //             ]
-    //             }
-    //         ]
-    //     },
-    // ]
 
     const handleViewPublications = (description) => {
         selectedProject === description ? setSelectedProject(null) : setSelectedProject(description);
     }
     
-    const handleEdit = (id, title, description) => {
-        setResearchTitle((prevData) => ({ ...prevData, id, title, description }))
+    const handleEdit = (id, title, description, status) => {
+        setResearchTitle((prevData) => ({ ...prevData, id, title, description, status }))
         setIsResearchTitleEditing(true)
     }
 
@@ -91,7 +38,7 @@ const Research = () => {
         if(researchTitle && researchTitle.id !== undefined) {
             const updateTitle = async () => {
                 try {
-                    const response = await fetch('https://port.abirmunna.me/research', {
+                    const response = await fetch('https://port.abirmunna.me/api/v1/research', {
                         method: 'PUT',
                         headers: {
                         'Content-Type': 'application/json',
@@ -100,7 +47,7 @@ const Research = () => {
                             "title": researchTitle?.title || "",
                             "description": researchTitle?.description || "",
                             "id": researchTitle?.id,
-                            "publications": researchTitle?.publications
+                            "status": researchTitle?.status
                         },
                         null,
                         2
@@ -123,7 +70,7 @@ const Research = () => {
         else{
             const updateTitle = async () => {
                 try {
-                    const response = await fetch('https://port.abirmunna.me/research', {
+                    const response = await fetch('https://port.abirmunna.me/api/v1/research', {
                         method: 'POST',
                         headers: {
                         'Content-Type': 'application/json',
@@ -131,6 +78,7 @@ const Research = () => {
                         body: JSON.stringify({
                             "title": researchTitle?.title || "",
                             "description": researchTitle?.description || "",
+                            "status": researchTitle?.status || ""
                         },
                         null,
                         2
@@ -157,7 +105,7 @@ const Research = () => {
     const handleTitleDelete = (id) => {
         const deleteResearch = async () => {
             try {
-                const response = await fetch(`https://port.abirmunna.me/research?id=${id}`, {
+                const response = await fetch(`https://port.abirmunna.me/api/v1/research?id=${id}`, {
                     method: 'DELETE',
                     headers: {
                     'Content-Type': 'application/json',
@@ -174,6 +122,7 @@ const Research = () => {
             }
         };
         deleteResearch();
+        fetchData();
     }
 
     const handlePublicationsEdit = (id, research_id, title, published, authors) => {
@@ -182,10 +131,10 @@ const Research = () => {
     }
 
     const handleSavePublication =() => {
-        if(publicationEditing && publicationEditing.research_id !== undefined) {
+        if(publicationEditing && publicationEditing?.research_id !== undefined) {
             const updatePublication = async () => {
                 try {
-                    const response = await fetch('https://port.abirmunna.me/publications', {
+                    const response = await fetch('https://port.abirmunna.me/api/v1/publications', {
                         method: 'PUT',
                         headers: {
                         'Content-Type': 'application/json',
@@ -217,7 +166,7 @@ const Research = () => {
         else{
             const updatePublication = async () => {
                 try {
-                    const response = await fetch('https://port.abirmunna.me/publications', {
+                    const response = await fetch('https://port.abirmunna.me/api/v1/publications', {
                         method: 'POST',
                         headers: {
                         'Content-Type': 'application/json',
@@ -226,7 +175,7 @@ const Research = () => {
                             "title": publicationEditing?.title || "",
                             "published": publicationEditing?.published || "",
                             "authors": publicationEditing?.authors || "",
-                            "research_id": publicationEditing?.research_id
+                            "research_id": publicationEditing?.id
                         },
                         null,
                         2
@@ -253,7 +202,7 @@ const Research = () => {
     const handlePublicationDelete = (id) => {
         const deletePublication = async () => {
             try {
-                const response = await fetch(`https://port.abirmunna.me/publications?id=${id}`, {
+                const response = await fetch(`https://port.abirmunna.me/api/v1/publications?id=${id}`, {
                     method: 'DELETE',
                     headers: {
                     'Content-Type': 'application/json',
@@ -278,6 +227,18 @@ const Research = () => {
                 <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-25 z-10 flex justify-center items-center">
                     <div className="w-96 h-fit p-4 bg-white text-black rounded space-y-4">
                         <div className='space-y-2'>
+                            <div className="flex">
+                                <p className='w-20'>Status</p>
+                                <select
+                                className="px-2 border rounded flex-1"
+                                onChange={e => setResearchTitle({...researchTitle, status: e.target.value})}
+                                value={researchTitle?.status}
+                                >
+                                    <option value="">Select status</option>
+                                    <option value="onGoing">On Going</option>
+                                    <option value="previousResearch">Previous Research</option>
+                                </select>
+                            </div>
                             <div className="flex">
                                 <p className='w-20'>Title</p>
                                 <input className='px-2 border rounded flex-1' type="text" onChange={e => setResearchTitle({...researchTitle, title: e.target.value})}  placeholder='Title' value={researchTitle?.title}/>
@@ -308,11 +269,11 @@ const Research = () => {
                             </div>
                             <div className="flex">
                                 <p className='w-20'>Published</p>
-                                <input className='px-2 border rounded flex-1' type="text" onChange={e => setResearchTitle({...publicationEditing, published: e.target.value})}  placeholder='Published' value={publicationEditing?.published}/>
+                                <input className='px-2 border rounded flex-1' type="text" onChange={e => setPublicationEditing({...publicationEditing, published: e.target.value})}  placeholder='Published' value={publicationEditing?.published}/>
                             </div>
                             <div className="flex">
                                 <p className='w-20'>Authors</p>
-                                <input className='px-2 border rounded flex-1' type="text" onChange={e => setResearchTitle({...publicationEditing, authors: e.target.value})}  placeholder='Authors' value={publicationEditing?.authors}/>
+                                <input className='px-2 border rounded flex-1' type="text" onChange={e => setPublicationEditing({...publicationEditing, authors: e.target.value})}  placeholder='Authors' value={publicationEditing?.authors}/>
                             </div>
                         </div>
                         <div className="flex justify-center gap-4">
@@ -327,17 +288,21 @@ const Research = () => {
                 </div>
             )}
             <p className='text-2xl font-bold text-center my-4'>Research</p>
-            <p className="text-xl font-bold bg-indigo-950 p-2 text-white w-fit">On Going</p>
+            <div className="flex gap-4">
+                <p className="text-xl font-bold bg-indigo-950 p-2 text-white w-fit">On Going</p>
+                {isLoggedIn && (<button onClick={() => setIsResearchTitleEditing(true)} className='edit'>+ Add Research</button>)}
+            </div>
             {
-                data?.map(d => (
+                data?.map(d => (d.status==='onGoing' && (
                     <div className='my-4' key={d.id}>
                         <p className="text-lg font-semibold">{d.title}</p>
                         <p className="">{d.description}</p>
                         {isLoggedIn && (<div className="flex gap-4">
-                            <button onClick={() => handleEdit(d.id, d.title, d.description)} className="fas fa-edit"></button>
+                            <button onClick={() => handleEdit(d.id, d.title, d.description, d.status)} className="fas fa-edit"></button>
                             <button onClick={() => handleTitleDelete(d.id)} className="fas fa-trash text-red-500"></button>
+                            <button onClick={() => handlePublicationsEdit(d.id)} className="edit">+ Add Publication</button>
                         </div>)}
-                        <button onClick={() => handleViewPublications(d.description)} className='border px-2 rounded my-2'>View Publications</button>
+                        <button onClick={() => handleViewPublications(d.description)} className={`border px-2 rounded my-2 ${d.publications.length ? '' : 'hidden'}`}>View Publications</button>
                         {selectedProject === d.description && (
                             d.publications.map(p => (
                                 <div key={Math.random()} className='border-b mb-4'>
@@ -353,6 +318,35 @@ const Research = () => {
                         )}
                     </div>
                 ))
+                )
+            }
+            <p className="text-xl font-bold bg-indigo-950 p-2 text-white w-fit">Previous Research</p>
+            {
+                data?.map(d => (d.status==='previousResearch' && (
+                    <div className='my-4' key={d.id}>
+                        <p className="text-lg font-semibold">{d.title}</p>
+                        <p className="">{d.description}</p>
+                        {isLoggedIn && (<div className="flex gap-4">
+                            <button onClick={() => handleEdit(d.id, d.title, d.description)} className="fas fa-edit"></button>
+                            <button onClick={() => handleTitleDelete(d.id)} className="fas fa-trash text-red-500"></button>
+                        </div>)}
+                        <button onClick={() => handleViewPublications(d.description)} className={`border px-2 rounded my-2 ${d.publications.length ? '' : 'hidden'}`}>View Publications</button>
+                        {selectedProject === d.description && (
+                            d.publications.map(p => (
+                                <div key={Math.random()} className='border-b mb-4'>
+                                    <p className="font-semibold">{p.title}</p>
+                                    <p>{p.published}</p>
+                                    <p>{p.authors}</p>
+                                    {isLoggedIn && (<div className="flex gap-4">
+                                        <button onClick={() => handlePublicationsEdit(p.id, p.research_id, p.title, p.published, p.authors)} className="fas fa-edit"></button>
+                                        <button onClick={() => handlePublicationDelete(d.id)} className="fas fa-trash text-red-500"></button>
+                                    </div>)}
+                                </div>
+                            ))
+                        )}
+                    </div>
+                ))
+                )
             }
         </div>
     );

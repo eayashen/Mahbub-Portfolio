@@ -17,7 +17,7 @@ const FundingHistory = () => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch('https://port.abirmunna.me/funding');
+            const response = await fetch('https://port.abirmunna.me/api/v1/funding');
             const jsonData = await response.json();
             setData(jsonData)
         } catch (error) {
@@ -35,7 +35,7 @@ const FundingHistory = () => {
         if(tableRow && tableRow.id !== undefined) {
             const updateHistory = async () => {
                 try {
-                    const response = await fetch('https://port.abirmunna.me/funding', {
+                    const response = await fetch('https://port.abirmunna.me/api/v1/funding', {
                         method: 'PUT',
                         headers: {
                         'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ const FundingHistory = () => {
         else{
             const updateHistory = async () => {
                 try {
-                    const response = await fetch('https://port.abirmunna.me/funding', {
+                    const response = await fetch('https://port.abirmunna.me/api/v1/funding', {
                         method: 'POST',
                         headers: {
                         'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ const FundingHistory = () => {
     const handleDelete = (id) => {
         const deleteHistory = async () => {
             try {
-                const response = await fetch(`https://port.abirmunna.me/funding?id=${id}`, {
+                const response = await fetch(`https://port.abirmunna.me/api/v1/funding?id=${id}`, {
                     method: 'DELETE',
                     headers: {
                     'Content-Type': 'application/json',

@@ -2,12 +2,14 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Navbar from './components/Navbar';
 import Home from './components/Home';
-import Research from './components/research';
+import Research from './components/Research';
+import Journal from './components/Journal';
 import FundingHistory from './components/FundingHistory';
 import Contact from './components/Contact';
 import Login from './components/Login';
 
 const App = () => {
+
   return (
     <div className='min-h-screen flex flex-col justify-between'>
       <Router>
@@ -16,6 +18,9 @@ const App = () => {
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/research' element={<Research />} />
+            <Route path='/journal' element={<Journal />} />
+            <Route path='/working-paper' element={<Journal />} />
+            <Route path='/policy' element={<Journal />} />
             <Route path='/fundinghistory' element={<FundingHistory />} />
             <Route path='/contact' element={<Contact />} />
             <Route path='/login' element={<Login />} />

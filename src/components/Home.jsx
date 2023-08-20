@@ -22,7 +22,7 @@ const Home = () => {
 
     const fetchData = async () => {
         try {
-            const response = await fetch('https://port.abirmunna.me/about');
+            const response = await fetch('https://port.abirmunna.me/api/v1/about');
             const jsonData = await response.json();
             setAbout(jsonData[0])
         } catch (error) {
@@ -33,7 +33,7 @@ const Home = () => {
 
     const fetchDesignation = async () => {
         try {
-            const response = await fetch('https://port.abirmunna.me/designation');
+            const response = await fetch('https://port.abirmunna.me/api/v1/designation');
             const jsonData = await response.json();
             setDesignation(jsonData)
         } catch (error) {
@@ -44,7 +44,7 @@ const Home = () => {
     
     const fetchAwards = async () => {
         try {
-            const response = await fetch('https://port.abirmunna.me/awards');
+            const response = await fetch('https://port.abirmunna.me/api/v1/awards');
             const jsonData = await response.json();
             setAwards(jsonData)
         } catch (error) {
@@ -72,7 +72,7 @@ const Home = () => {
         if(bio && bio.id !== undefined) {
             const updateData = async () => {
                 try {
-                    const response = await fetch('https://port.abirmunna.me/designation', {
+                    const response = await fetch('https://port.abirmunna.me/api/v1/designation', {
                         method: 'PUT',
                         headers: {
                         'Content-Type': 'application/json',    
@@ -104,7 +104,7 @@ const Home = () => {
         else{
             const updateData = async () => {
                 try {
-                    const response = await fetch('https://port.abirmunna.me/designation', {
+                    const response = await fetch('https://port.abirmunna.me/api/v1/designation', {
                         method: 'POST',
                         headers: {
                         'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ const Home = () => {
     const handleBioDelete = (id) => {
         const deleteDesignation = async () => {
             try {
-                const response = await fetch(`https://port.abirmunna.me/designation?id=${id}`, {
+                const response = await fetch(`https://port.abirmunna.me/api/v1/designation?id=${id}`, {
                     method: 'DELETE',
                     headers: {
                     'Content-Type': 'application/json',
@@ -182,7 +182,7 @@ const Home = () => {
         if(award && award.id !== undefined) {
             const updateAward = async () => {
                 try {
-                    const response = await fetch('https://port.abirmunna.me/awards', {
+                    const response = await fetch('https://port.abirmunna.me/api/v1/awards', {
                         method: 'PUT',
                         headers: {
                         'Content-Type': 'application/json',
@@ -213,7 +213,7 @@ const Home = () => {
         else{
             const updateAward = async () => {
                 try {
-                    const response = await fetch('https://port.abirmunna.me/awards', {
+                    const response = await fetch('https://port.abirmunna.me/api/v1/awards', {
                         method: 'POST',
                         headers: {
                         'Content-Type': 'application/json',
@@ -246,7 +246,7 @@ const Home = () => {
     const handleDeleteAward = (id) => {
         const deleteAward = async () => {
             try {
-                const response = await fetch(`https://port.abirmunna.me/awards?id=${id}`, {
+                const response = await fetch(`https://port.abirmunna.me/api/v1/awards?id=${id}`, {
                     method: 'DELETE',
                     headers: {
                     'Content-Type': 'application/json',
@@ -287,7 +287,7 @@ const Home = () => {
     const handleSaveClick = () => {
         const updateData = async () => {
             try {
-                const response = await fetch('https://port.abirmunna.me/about', {
+                const response = await fetch('https://port.abirmunna.me/api/v1/about', {
                     method: 'PUT',
                     headers: {
                     'Content-Type': 'application/json',
