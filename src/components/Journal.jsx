@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { Triangle } from "react-loader-spinner";
 
 const Journal = () => {
   const location = useLocation();
@@ -9,21 +10,42 @@ const Journal = () => {
   const [isJournalEditing, setIsJournalEditing] = useState(false);
   const [tempJournal, setTempJournal] = useState(null);
   const [addPublication, setAddPublication] = useState(false);
+  const [pathname, setPathname] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchData(location.pathname.slice(1));
+    setPathname(location.pathname.slice(1));
   }, [location.pathname]);
 
   const fetchData = async (path) => {
-    const response = await fetch(
-      "https://port.abirmunna.me/api/v1/publications"
-    );
-    const data = await response.json();
-    setJournal(data.filter((item) => item.publications_type === path));
+    try {
+      setLoading(true); // Set loading state to true before fetching
+      const response = await fetch(
+        "https://port.abirmunna.me/api/v1/publications"
+      );
+      const data = await response.json();
+
+      // Simulate some delay to see the loading state in action
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      setJournal(data.filter((item) => item.publications_type === path));
+      setLoading(false); // Set loading state to false after fetching
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoading(false); // Set loading state to false in case of error
+    }
   };
 
-  const handleEdit = (id, title, published, authors, research_id) => {
-    setTempJournal({ id, title, published, authors, research_id });
+  const handleEdit = (id, research_id, title, published, authors) => {
+    setTempJournal((prevData) => ({
+      ...prevData,
+      id,
+      research_id,
+      title,
+      published,
+      authors,
+    }));
     setIsJournalEditing(true);
   };
 
@@ -118,6 +140,21 @@ const Journal = () => {
     deletePublication();
   };
 
+  if (loading)
+    return (
+      <div className="fixed top-0 left-0 flex justify-center items-center h-full w-screen">
+        <Triangle
+          height="60"
+          width="60"
+          color="#4fa94d"
+          ariaLabel="triangle-loading"
+          wrapperStyle={{}}
+          wrapperClassName=""
+          visible={true}
+        />
+      </div>
+    );
+
   return (
     <div className="md:mx-24 mx-4">
       {isJournalEditing && (
@@ -195,7 +232,7 @@ const Journal = () => {
                       publications_type: e.target.value,
                     })
                   }
-                  value={tempJournal?.publications_type || ''}
+                  value={tempJournal?.publications_type || ""}
                 >
                   <option value="">Select Type</option>
                   <option value="journal">Journal</option>
@@ -260,10 +297,18 @@ const Journal = () => {
           </div>
         </div>
       )}
-      <p className="text-2xl font-bold text-center my-4">JOURNAL ARTICALS</p>
-      {isLoggedIn && <button className="edit" onClick={() => setAddPublication(true)}>
-        + Add Publication
-      </button>}
+      <p className="text-2xl font-bold text-center my-4">
+        {pathname === "journal"
+          ? "JOURNAL ARTICALS"
+          : pathname === "working-paper"
+          ? "WORKING PAPER"
+          : "POLICY"}
+      </p>
+      {isLoggedIn && (
+        <button className="edit" onClick={() => setAddPublication(true)}>
+          + Add Publication
+        </button>
+      )}
       {journal?.map((item, index) => (
         <div key={index} className="my-4 border-b pb-2">
           <p className="text-xl font-bold">{item.title}</p>
@@ -275,10 +320,10 @@ const Journal = () => {
                 onClick={() =>
                   handleEdit(
                     item.id,
+                    item.research_id,
                     item.title,
                     item.published,
-                    item.authors,
-                    item.research_id
+                    item.authors
                   )
                 }
                 className="fas fa-edit"

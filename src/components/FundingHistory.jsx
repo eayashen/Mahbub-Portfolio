@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Triangle } from "react-loader-spinner";
 
 const FundingHistory = () => {
     const isLoggedIn = useSelector((state) => state.isLoggedIn.value);
@@ -10,16 +11,19 @@ const FundingHistory = () => {
     const [isTableEditing, setIsTableEditing] = useState(false);
     const [tableRow, setTableRow] = useState(null);
     const [data, setData] = useState();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         fetchData()
     }, [])
 
     const fetchData = async () => {
+        setLoading(true);
         try {
             const response = await fetch('https://port.abirmunna.me/api/v1/funding');
             const jsonData = await response.json();
             setData(jsonData)
+            setLoading(false);
         } catch (error) {
             console.log('Error fetching data:', error);
             // setLoading(false);
@@ -140,7 +144,22 @@ const FundingHistory = () => {
             }, {});
             setRoleSum(roleSums);
         }
-    }, [data]);  
+    }, [data]); 
+    
+    if (loading)
+    return (
+      <div className="fixed top-0 left-0 flex justify-center items-center h-full w-screen">
+        <Triangle
+          height="60"
+          width="60"
+          color="#4fa94d"
+          ariaLabel="triangle-loading"
+          wrapperStyle={{}}
+          wrapperClassName=""
+          visible={true}
+        />
+      </div>
+    );
 
     return (
         <div className='md:mx-24 mx-4'>

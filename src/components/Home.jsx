@@ -6,6 +6,7 @@ import img2 from '../images/456.jpg';
 import img3 from '../images/789.jpg';
 import profile from '../images/pro_pic.jpg';
 import { useSelector } from 'react-redux';
+import { Triangle } from "react-loader-spinner";
 
 const Home = () => {
     const [about, setAbout] = useState();
@@ -13,6 +14,7 @@ const Home = () => {
     const [awards, setAwards] = useState();
     const [editBio, setEditBio] = useState(null)
     const isLoggedIn = useSelector(state => state.isLoggedIn.value);
+    const [loading, setLoading] = useState(false);
     
     useEffect(() => {
         fetchData();
@@ -21,6 +23,7 @@ const Home = () => {
       }, []);
 
     const fetchData = async () => {
+        setLoading(true);
         try {
             const response = await fetch('https://port.abirmunna.me/api/v1/about');
             const jsonData = await response.json();
@@ -47,6 +50,7 @@ const Home = () => {
             const response = await fetch('https://port.abirmunna.me/api/v1/awards');
             const jsonData = await response.json();
             setAwards(jsonData)
+            setLoading(false);
         } catch (error) {
             console.log('Error fetching data:', error);
             // setLoading(false);
@@ -326,6 +330,20 @@ const Home = () => {
         setEditBio(null)
         setIsEditing(false);
     }
+
+    if(loading) return (
+        <div className="fixed top-0 left-0 flex justify-center items-center h-full w-screen">
+        <Triangle
+          height="60"
+          width="60"
+          color="#4fa94d"
+          ariaLabel="triangle-loading"
+          wrapperStyle={{}}
+          wrapperClassName=""
+          visible={true}
+        />
+      </div>
+    )
 
     return (
         <div className='mt-4 md:mx-24 mx-4'>
